@@ -11,10 +11,7 @@ import IconButton from "@mui/material/IconButton";
 import { Close } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { submitFormData } from "./firebaseutils";
-import QRCode from "react-qr-code";
-import { QRCodeSVG } from "qrcode.react";
 import { useNavigate } from "react-router-dom";
-import { QRCodeCanvas } from "qrcode.react";
 import { useQRCode } from "next-qrcode";
 const drawerBleeding = 56;
 
