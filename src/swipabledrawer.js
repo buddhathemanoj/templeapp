@@ -36,7 +36,6 @@ const SwipeableEdgeDrawer = ({
   name,
   email,
   noofpersons,
-  address,
   selectedItems,
   cardData
 }) => {
@@ -53,7 +52,6 @@ const SwipeableEdgeDrawer = ({
         name,
         email,
         noofpersons,
-        address,
         selectedItems,
       };
       const result = await submitFormData(formData);
