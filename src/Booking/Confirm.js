@@ -9,7 +9,7 @@ import { Typography } from "@mui/material";
 const ConfirmBooking = () => {
   const location = useLocation();
   const { name, email, noofpersons, address, selectedItems } = location.state;
-console.log(selectedItems)
+  console.log(address,"az")
   return (
     <div>
       {/* Display Booking Details */}
@@ -28,6 +28,7 @@ console.log(selectedItems)
             <Typography variant="h5" component="div">
               Address: {address}
             </Typography>
+            
           </CardContent>
         </Box>
       </Card>
@@ -53,6 +54,7 @@ console.log(selectedItems)
                 >
                   {item.time}
                 </Typography>
+              
               </CardContent>
             </Box>
           </Box>

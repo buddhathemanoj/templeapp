@@ -38,6 +38,7 @@ const SwipeableEdgeDrawer = ({
   noofpersons,
   address,
   selectedItems,
+  cardData
 }) => {
   const [confirmed, setConfirmed] = useState(false);
   const navigate = useNavigate();
@@ -66,6 +67,13 @@ const SwipeableEdgeDrawer = ({
       console.log("something went wrong", error);
     }
   };
+  const count = cardData.map((item) => item.count)
+
+  const getCountById = (itemId) => {
+    const selectedItem = cardData.find((item) => item.id === itemId);
+    return selectedItem ? selectedItem.count || 0 : 0;
+  };
+
   return (
     <SwipeableDrawer
       anchor="bottom"
@@ -141,14 +149,14 @@ const SwipeableEdgeDrawer = ({
                 {noofpersons}
               </Typography>
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
+            {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body1" component="div">
-                <strong>Address:</strong>
+                <strong>Tickets:</strong>
               </Typography>
               <Typography variant="body1" component="div">
-                {address}
+                {count}
               </Typography>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
         <Card>
@@ -161,7 +169,9 @@ const SwipeableEdgeDrawer = ({
                 <Typography variant="body1" component="div">
                   <strong>Time:</strong> {item.time}
                 </Typography>
-
+                <Typography variant="body1" component="div">
+                  <strong>Tickets:</strong> {getCountById(item.id)}
+                </Typography>
                 <hr />
               </div>
             ))}

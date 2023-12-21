@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom/dist";
 import Button from "@mui/material/Button";
+import { ToastContainer, toast } from 'react-toastify';
 import { submitFormData } from "../firebaseutils";
 const Home = () => {
   const navigate = useNavigate();
@@ -10,21 +11,24 @@ const Home = () => {
     name: "",
     email: "",
     noofpersons: "",
-    address: "",
+    
   });
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (formdata.name !== "" && formdata.email !== "", formdata.noofpersons !== "") {
+      navigate("/bookticket", {
+        state: {
+          name: formdata.name,
+          email: formdata.email,
+          noofpersons: formdata.noofpersons,
+          address: formdata.address,
+        },
+      });
+
+    }
+    toast.error("Please fill the Input Field");
 
 
-   
-    navigate("/bookticket", {
-      state: {
-        name: formdata.name,
-        email: formdata.email,
-        noofpersons: formdata.noofpersons,
-        address: formdata.address,
-      },
-    });
   };
   return (
     <div>
@@ -53,6 +57,7 @@ const Home = () => {
             id="outlined-multiline-flexible"
             label="Email"
             multiline
+            type="email"
             maxRows={6}
             onChange={(e) => {
               setFormdata({ ...formdata, email: e.target.value });
@@ -67,7 +72,7 @@ const Home = () => {
               setFormdata({ ...formdata, noofpersons: e.target.value });
             }}
           />
-          <TextField
+          {/* <TextField
             id="outlined-multiline-flexible"
             label="Address"
             multiline
@@ -75,7 +80,7 @@ const Home = () => {
             onChange={(e) => {
               setFormdata({ ...formdata, address: e.target.value });
             }}
-          />
+          /> */}
           <div style={{ paddingLeft: "7px", width: "100%" }}>
             <Button
               style={{ width: "100%" }} // Set width to 100% for the button
@@ -85,6 +90,7 @@ const Home = () => {
               Submit
             </Button>
           </div>
+          <ToastContainer />
         </Box>
       </div>
     </div>

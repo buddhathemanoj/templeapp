@@ -14,24 +14,41 @@ import { submitFormData } from "../firebaseutils";
 const Booking = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   const { name, email, noofpersons, address } = location.state || {};
+  const [cardData, setCardData] = useState(data)
   const [selectedItems, setSelectedItems] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isFav, setFav] = useState(false)
 
-  const handleSelectItem = (item) => {
+  const handleSelectItem = (item, itemId) => {
     if (!selectedItems.find((selectedItem) => selectedItem.id === item.id)) {
       setSelectedItems((prevSelected) => [...prevSelected, item]);
     }
+    setCardData((prevData) =>
+      prevData.map((item) =>
+        item.id === itemId ? { ...item, count: (item.count || 0) + 1 } : item
+      )
+    );
   };
 
-  const handleRemoveItem = (item) => {
+
+
+  const handleRemoveItem = (item, itemId) => {
     setSelectedItems((prevSelected) =>
       prevSelected.filter((selectedItem) => selectedItem.id !== item.id)
     );
+    setCardData((prevData) =>
+      prevData.map((item) =>
+        item.id === itemId && item.count && item.count > 0
+          ? { ...item, count: item.count - 1 }
+          : item
+      )
+    );
   };
- const handledrawer = () =>{
-   setDrawerOpen(true);
- }
+  const handledrawer = () => {
+    setDrawerOpen(true);
+  }
   const handleBooking = () => {
     setDrawerOpen(true);
   };
@@ -42,7 +59,7 @@ const Booking = () => {
 
   return (
     <div>
-      {data.map((item) => (
+      {cardData.map((item) => (
         <Card key={item.id} sx={{ maxWidth: 345, my: 2, flexDirection: "row" }}>
           <Box sx={{ display: "flex", flexDirection: "row" }}>
             <CardMedia
@@ -73,10 +90,11 @@ const Booking = () => {
                       ? "selected"
                       : ""
                   }
-                  onClick={() => handleSelectItem(item)}
+                  onClick={() => handleSelectItem(item, item.id)}
                 >
                   <Add />
                 </IconButton>
+                <p>{item.count || 0}</p>
                 <IconButton
                   className={
                     selectedItems.some(
@@ -85,7 +103,7 @@ const Booking = () => {
                       ? "selected"
                       : ""
                   }
-                  onClick={() => handleRemoveItem(item)}
+                  onClick={() => handleRemoveItem(item, item.id)}
                 >
                   <Remove />
                 </IconButton>
@@ -105,6 +123,7 @@ const Booking = () => {
             variant="contained"
             endIcon={<BookOnline />}
             onClick={handleBooking}
+            style={{marginBottom:"20px"}}
           >
             Book Your Ticket
           </Button>
@@ -112,13 +131,14 @@ const Booking = () => {
       </div>
 
       <SwipeableEdgeDrawer
-        open={drawerOpen} 
+        open={drawerOpen}
         onOpen={handledrawer}
         onClose={handleDrawerClose}
         name={name}
         email={email}
         noofpersons={noofpersons}
         address={address}
+        cardData={cardData}
         selectedItems={selectedItems}
       />
     </div>
