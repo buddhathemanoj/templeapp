@@ -41,6 +41,7 @@ const SwipeableEdgeDrawer = ({
   email,
   noofpersons,
   selectedItems,
+  totalPrice,
   cardData
 }) => {
   const [confirmed, setConfirmed] = useState(false);
@@ -48,7 +49,8 @@ const SwipeableEdgeDrawer = ({
   const { Canvas } = useQRCode();
   const [qrCodeData, setQrCodeData] = useState("");
   const [dataUrl, setDataUrl] = useState("");
-
+  console.log("total price", totalPrice)
+  console.log("selecttedoteh", selectedItems)
   const handleConfirm = async () => {
     onOpen();
 
@@ -59,6 +61,7 @@ const SwipeableEdgeDrawer = ({
           email,
           noofpersons,
           selectedItems,
+          totalPrice
         };
 
         const result = await submitFormData(formData);
@@ -67,7 +70,7 @@ const SwipeableEdgeDrawer = ({
           setConfirmed(true);
           console.log("form submitted successfully", result);
           setQrCodeData(result);
-          navigate("/success", { state: { result ,formData } });
+          navigate("/success", { state: { result, formData , totalPrice } });
         }
 
       } catch (error) {
@@ -137,7 +140,7 @@ const SwipeableEdgeDrawer = ({
       >
         <Card sx={{ mt: 2, mb: 2 }}>
           <CardContent>
-            <Typography variant="h5" component="div" gutterBottom>
+            <Typography variant="h6" component="div" gutterBottom>
               Booking Information
             </Typography>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -169,20 +172,46 @@ const SwipeableEdgeDrawer = ({
         </Card>
         <Card>
           <CardContent>
-            {selectedItems.map((item) => (
+            {selectedItems.map((item) =>  (
               <div key={item.id}>
-                <Typography variant="body1" component="div">
-                  <strong>Title:</strong> {item.title}
-                </Typography>
-                <Typography variant="body1" component="div">
-                  <strong>Time:</strong> {item.time}
-                </Typography>
-                <Typography variant="body1" component="div">
-                  <strong>Tickets:</strong> {getCountById(item.id)}
-                </Typography>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <Typography variant="body1" component="div">
+                    <strong>Title:</strong>
+                  </Typography>
+                  <Typography variant="body1" component="div">
+                    {item.title}
+                  </Typography>
+                </div>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <Typography variant="body1" component="div">
+                    <strong>Price:</strong>
+                  </Typography>
+                  <Typography variant="body1" component="div">
+                    RM {item.price}
+                  </Typography>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                  <Typography variant="body1" component="div">
+                    <strong>Tickets:</strong>
+                  </Typography>
+                  <Typography variant="body1" component="div">
+                    {item.count}
+                  </Typography>
+                </div>
+
                 <hr />
               </div>
             ))}
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <Typography variant="body1" component="div">
+                <strong>Total Price:</strong>
+              </Typography>
+              <Typography variant="body1" component="div">
+                RM {totalPrice}
+              </Typography>
+            </div>
+
             <FormControlLabel
               control={
                 <Checkbox

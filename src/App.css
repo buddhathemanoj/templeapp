@@ -25,6 +25,11 @@ width: 100%;
 height: 1100dvh;
   padding: 10px 20px ;
 }
+.succsesbg{
+  background-color: #E9B824;
+  width: 100%;
+  height: 100dvh;
+}
 .logo {
   height: 6em;
   padding: 1.5em;

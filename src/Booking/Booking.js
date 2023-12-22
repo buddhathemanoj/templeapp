@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CardMedia from "@mui/material/CardMedia";
 import Card from "@mui/material/Card";
@@ -17,15 +18,46 @@ const Booking = () => {
   const location = useLocation();
 
   const { name, email, noofpersons, address } = location.state || {};
-  const [cardData, setCardData] = useState(data)
+  const [cardData, setCardData] = useState(data);
   const [selectedItems, setSelectedItems] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [isFav, setFav] = useState(false)
+  const [isFav, setFav] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    // Calculate total price whenever selectedItems or cardData change
+    const calculatedTotalPrice = selectedItems.reduce(
+      (total, item) => total + (item.price * (item.count || 0)),
+      0
+    );
+    setTotalPrice(calculatedTotalPrice);
+  }, [selectedItems, cardData]);
+
 
   const handleSelectItem = (item, itemId) => {
-    if (!selectedItems.find((selectedItem) => selectedItem.id === item.id)) {
-      setSelectedItems((prevSelected) => [...prevSelected, item]);
+    const existingItem = selectedItems.find(
+      (selectedItem) => selectedItem.id === item.id
+    );
+
+    if (!existingItem) {
+      setSelectedItems((prevSelected) => [
+        ...prevSelected,
+        { ...item, count: 1, totalPrice: item.price },
+      ]);
+    } else {
+      setSelectedItems((prevSelected) =>
+        prevSelected.map((selectedItem) =>
+          selectedItem.id === item.id
+            ? {
+              ...selectedItem,
+              count: selectedItem.count + 1,
+              totaleachPrice: selectedItem.totalPrice + item.price,
+            }
+            : selectedItem
+        )
+      );
     }
+
     setCardData((prevData) =>
       prevData.map((item) =>
         item.id === itemId ? { ...item, count: (item.count || 0) + 1 } : item
@@ -33,12 +65,31 @@ const Booking = () => {
     );
   };
 
-
-
   const handleRemoveItem = (item, itemId) => {
-    setSelectedItems((prevSelected) =>
-      prevSelected.filter((selectedItem) => selectedItem.id !== item.id)
+    const existingItem = selectedItems.find(
+      (selectedItem) => selectedItem.id === item.id
     );
+
+    if (existingItem) {
+      setSelectedItems((prevSelected) =>
+        prevSelected.map((selectedItem) =>
+          selectedItem.id === item.id
+            ? {
+              ...selectedItem,
+              count: selectedItem.count - 1,
+              totalPrice: selectedItem.totalPrice - item.price,
+            }
+            : selectedItem
+        )
+      );
+
+      if (existingItem.count === 1) {
+        setSelectedItems((prevSelected) =>
+          prevSelected.filter((selectedItem) => selectedItem.id !== item.id)
+        );
+      }
+    }
+
     setCardData((prevData) =>
       prevData.map((item) =>
         item.id === itemId && item.count && item.count > 0
@@ -47,9 +98,11 @@ const Booking = () => {
       )
     );
   };
+
   const handledrawer = () => {
     setDrawerOpen(true);
-  }
+  };
+
   const handleBooking = () => {
     setDrawerOpen(true);
   };
@@ -73,7 +126,7 @@ const Booking = () => {
               />
               <Box sx={{ display: "flex", flexDirection: "column" }}>
                 <CardContent sx={{ flex: "1 0 auto" }}>
-                  <Typography component="div" variant="h5">
+                  <Typography component="div" variant="h6">
                     {item.title}
                   </Typography>
                   <Typography
@@ -81,7 +134,7 @@ const Booking = () => {
                     color="text.secondary"
                     component="div"
                   >
-                    {item.time}
+                    RM :{item.price}
                   </Typography>
                 </CardContent>
                 <Box sx={{ display: "flex", alignItems: "center", pl: 4, pb: 1 }}>
@@ -123,7 +176,6 @@ const Booking = () => {
           <Box>
             <Button
               size="large"
-
               variant="contained"
               endIcon={<BookOnline />}
               onClick={handleBooking}
@@ -144,6 +196,7 @@ const Booking = () => {
           address={address}
           cardData={cardData}
           selectedItems={selectedItems}
+          totalPrice={totalPrice}
         />
       </div>
     </>
