@@ -1,10 +1,17 @@
 .selected {
-    background-color: lightgreen;
-    transition: background-color 0.3s ease-in-out;
-  }
-  .fav-style {
-    color: green;
-  }
-  .remove-fav {
-    color: rgba(0, 0, 0, 0.54);
-  }
+  background-color: lightgreen;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.fav-style {
+  color: green;
+}
+
+.remove-fav {
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.booking-contaniner {
+  background-color: #E9B824;
+  padding: 10px 20px;
+}

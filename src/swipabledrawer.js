@@ -8,11 +8,15 @@ import SwipeableDrawer from "@mui/material/SwipeableDrawer";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import IconButton from "@mui/material/IconButton";
+import { ToastContainer, toast } from 'react-toastify';
+
 import { Close } from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { submitFormData } from "./firebaseutils";
 import { useNavigate } from "react-router-dom";
 import { useQRCode } from "next-qrcode";
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
 const drawerBleeding = 56;
 
 const StyledBox = styled(Box)(({ theme }) => ({
@@ -47,26 +51,39 @@ const SwipeableEdgeDrawer = ({
 
   const handleConfirm = async () => {
     onOpen();
-    try {
-      const formData = {
-        name,
-        email,
-        noofpersons,
-        selectedItems,
-      };
-      const result = await submitFormData(formData);
-      if (result) {
-        setConfirmed(true);
-        console.log("form submitted successfully" ,result);
-        setQrCodeData(result);
-        navigate("/success", { state: { result } });
+
+    if (checked && name.trim() !== "" && email.trim() !== "" && noofpersons.trim() !== "") {
+      try {
+        const formData = {
+          name,
+          email,
+          noofpersons,
+          selectedItems,
+        };
+
+        const result = await submitFormData(formData);
+
+        if (result) {
+          setConfirmed(true);
+          console.log("form submitted successfully", result);
+          setQrCodeData(result);
+          navigate("/success", { state: { result ,formData } });
+        }
+
+      } catch (error) {
+        console.log("something went wrong", error);
       }
-    } catch (error) {
-      console.log("something went wrong", error);
+    } else {
+      toast.error("Please fill the Input Fields correctly and agree to the terms and conditions");
     }
   };
-  const count = cardData.map((item) => item.count)
 
+  const count = cardData.map((item) => item.count)
+  const [checked, setChecked] = useState(false);
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
   const getCountById = (itemId) => {
     const selectedItem = cardData.find((item) => item.id === itemId);
     return selectedItem ? selectedItem.count || 0 : 0;
@@ -77,7 +94,7 @@ const SwipeableEdgeDrawer = ({
       anchor="bottom"
       open={open}
       onClose={onClose}
-      onOpen={() => {}}
+      onOpen={() => { }}
       swipeAreaWidth={drawerBleeding}
       disableSwipeToOpen={false}
       ModalProps={{
@@ -118,7 +135,7 @@ const SwipeableEdgeDrawer = ({
           overflow: "auto",
         }}
       >
-        <Card sx={{ mt: 2 ,mb:2}}>
+        <Card sx={{ mt: 2, mb: 2 }}>
           <CardContent>
             <Typography variant="h5" component="div" gutterBottom>
               Booking Information
@@ -147,14 +164,7 @@ const SwipeableEdgeDrawer = ({
                 {noofpersons}
               </Typography>
             </div>
-            {/* <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography variant="body1" component="div">
-                <strong>Tickets:</strong>
-              </Typography>
-              <Typography variant="body1" component="div">
-                {count}
-              </Typography>
-            </div> */}
+
           </CardContent>
         </Card>
         <Card>
@@ -173,7 +183,17 @@ const SwipeableEdgeDrawer = ({
                 <hr />
               </div>
             ))}
-
+            <FormControlLabel
+              control={
+                <Checkbox
+                  style={{ float: 'left', paddingLeft: '20px' }}
+                  aria-label="Terms and conditions"
+                  checked={checked}
+                  onChange={handleChange}
+                />
+              }
+              label="I agree to the terms and conditions"
+            />
             <Button
               size="large"
               sx={{ width: "100%" }}
