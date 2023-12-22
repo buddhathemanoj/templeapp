@@ -114,72 +114,69 @@ const Booking = () => {
   return (
     <>
       <Navbar />
+      <br/>
+     
+      <br/>
       <div className="booking-contaniner">
+      <br/>
+      <br/>
+     
         {cardData.map((item) => (
-          <Card key={item.id} sx={{ maxWidth: 345, my: 2, flexDirection: "row" }}>
-            <Box sx={{ display: "flex", flexDirection: "row" }}>
-              <CardMedia
-                component="img"
-                sx={{ width: 151 }}
-                image={item.image}
-                alt={`${item.title} image`}
-              />
-              <Box sx={{ display: "flex", flexDirection: "column" }}>
-                <CardContent sx={{ flex: "1 0 auto" }}>
-                  <Typography component="div" variant="h6">
-                    {item.title}
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    color="text.secondary"
-                    component="div"
-                  >
-                    RM :{item.price}
-                  </Typography>
-                </CardContent>
-                <Box sx={{ display: "flex", alignItems: "center", pl: 4, pb: 1 }}>
-                  <IconButton
-                    className={
-                      selectedItems.some(
-                        (selectedItem) => selectedItem.id === item.id
-                      )
-                        ? "selected"
-                        : ""
-                    }
-                    onClick={() => handleSelectItem(item, item.id)}
-                  >
-                    <Add />
-                  </IconButton>
-                  <p>{item.count || 0}</p>
-                  <IconButton
-                    className={
-                      selectedItems.some(
-                        (selectedItem) => selectedItem.id === item.id
-                      )
-                        ? "selected"
-                        : ""
-                    }
-                    onClick={() => handleRemoveItem(item, item.id)}
-                  >
-                    <Remove />
-                  </IconButton>
-                  <IconButton>
-                    <Favorite />
-                  </IconButton>
+          <div style={{ padding: '0px 20px' }}>
+            <Card key={item.id} sx={{ maxWidth: 345, height: 125, my: 2, flexDirection: "row" }}>
+              <Box sx={{ display: "flex", flexDirection: "row" }}>
+                {/* Image on the left */}
+                <CardMedia
+                  component="img"
+                  sx={{ width: 100, flexShrink: 0 }} // Set flexShrink to 0 to prevent the image from shrinking
+                  image={item.image}
+                  alt={`${item.title} image`}
+                />
+
+                <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1, paddingLeft: 0 }}>
+                  <CardContent sx={{ flex: "1 0 auto" ,textAlign:'left',padding:'2px  10px 0px  10px'}}>
+                    <Typography sx={{fontSize:'16px'}} component="div" variant="h6">
+                      {item.title}<br/>
+                      {item.titlettamil}
+                    </Typography>
+                    <Typography variant="subtitle1" color="text.secondary" component="div">
+                      RM: {item.price}
+                    </Typography>
+                  </CardContent>
+
+                  <Box sx={{ display: "flex", flexDirection: "row", alignItems: "right",float:'right', gap: '10px',justifyContent:'right' ,marginBottom:'5px' }}>
+                    <IconButton
+                      className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
+                      onClick={() => handleSelectItem(item, item.id)}
+                    >
+                      <Add />
+                    </IconButton>
+                    <p>{item.count || 0}</p>
+                    <IconButton
+                      className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
+                      onClick={() => handleRemoveItem(item, item.id)}
+                    >
+                      <Remove />
+                    </IconButton>
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-          </Card>
-        ))}
+            </Card>
 
-        <div>
-          <Box>
+
+          </div>
+
+        ))}
+        <br />
+        <br />
+        <div className="padningnone" style={{ position: "fixed", bottom: 0, width: "100%", zIndex: 1000 }}>
+          <Box sx={{ width: '100%' }}>
             <Button
               size="large"
               variant="contained"
               endIcon={<BookOnline />}
               onClick={handleBooking}
-              style={{ marginBottom: "59px" }}
+              style={{ borderRadius: '0px', width: '100%' }}
             >
               Confirm Ticket
             </Button>

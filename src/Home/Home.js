@@ -182,7 +182,7 @@ const Home = () => {
           flexDirection="column"
           component="form"
           sx={{
-            "& .MuiTextField-root": { m: 1, width: "100%" }, padding: '0 15px'
+            "& .MuiTextField-root": { width: "100%" ,mb:1}, padding: '0 5px'
           }}
           noValidate
           autoComplete="off"
@@ -208,7 +208,7 @@ const Home = () => {
           />
           <TextField
             id="outlined-multiline-flexible"
-            label="No of Persons"
+            label="Phone Number"
             multiline
             type="number"
             maxRows={6}
@@ -219,7 +219,7 @@ const Home = () => {
           <FormControlLabel
             control={
               <Checkbox
-                style={{ float: 'left', paddingLeft: '20px' }}
+                style={{ float: 'left', paddingLeft: '15px' }}
                 aria-label="Terms and conditions"
                 checked={checked}
                 onChange={handleChange}
@@ -227,7 +227,7 @@ const Home = () => {
             }
             label="I agree to the terms and conditions"
           />
-          <div style={{ paddingLeft: "7px", width: "100%" }}>
+          <div style={{  width: "100%" }}>
             <Button
               style={{ width: "100%" }}
               variant="contained"

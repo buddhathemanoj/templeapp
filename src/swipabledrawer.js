@@ -70,7 +70,7 @@ const SwipeableEdgeDrawer = ({
           setConfirmed(true);
           console.log("form submitted successfully", result);
           setQrCodeData(result);
-          navigate("/success", { state: { result, formData , totalPrice } });
+          navigate("/success", { state: { result, formData, totalPrice } });
         }
 
       } catch (error) {
@@ -98,7 +98,7 @@ const SwipeableEdgeDrawer = ({
       open={open}
       onClose={onClose}
       onOpen={() => { }}
-      swipeAreaWidth={drawerBleeding}
+      // swipeAreaWidth={drawerBleeding}
       disableSwipeToOpen={false}
       ModalProps={{
         keepMounted: true,
@@ -124,7 +124,6 @@ const SwipeableEdgeDrawer = ({
             px: 2,
           }}
         >
-          <Typography variant="h6">Booking Details</Typography>
           <IconButton onClick={onClose}>
             <Close />
           </IconButton>
@@ -138,11 +137,12 @@ const SwipeableEdgeDrawer = ({
           overflow: "auto",
         }}
       >
-        <Card sx={{ mt: 2, mb: 2 }}>
+        <Card sx={{ mt: 2, mb: 2 }}>   
+            
           <CardContent>
-            <Typography variant="h6" component="div" gutterBottom>
-              Booking Information
-            </Typography>
+            <br/>
+   <Typography style={{fontSize:'16px'}} variant="h6">Purchase Info </Typography>
+
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body1" component="div">
                 <strong>Name:</strong>
@@ -161,7 +161,7 @@ const SwipeableEdgeDrawer = ({
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body1" component="div">
-                <strong>No. of Persons:</strong>
+                <strong>Phone Number:</strong>
               </Typography>
               <Typography variant="body1" component="div">
                 {noofpersons}
@@ -172,7 +172,7 @@ const SwipeableEdgeDrawer = ({
         </Card>
         <Card>
           <CardContent>
-            {selectedItems.map((item) =>  (
+            {selectedItems.map((item) => (
               <div key={item.id}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <Typography variant="body1" component="div">

@@ -12,6 +12,9 @@
 }
 
 .booking-contaniner {
-  background-color: #E9B824;
-  padding: 10px 20px;
+  background-color: #ffffff;
+  /* padding: 10px 20px; */
+}
+.padningnone{
+  padding: 0px !important;
 }
