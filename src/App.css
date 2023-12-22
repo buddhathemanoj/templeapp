@@ -3,18 +3,18 @@
   background-color: #E9B824;
   margin: 0 auto;
   min-height: 100vh;
-  text-align: center;
+  /* text-align: center; */
 }
 .custom-logo-head-navav{
   
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   text-align: left;
   /* margin: 0; */
 }
 .custom-logo-head{
-  font-family: 'Bungee Shade', sans-serif;
-  font-size: 30px;
+  /* font-family: 'Bungee Shade', sans-serif; */
+  font-size: 27px;
   font-weight: 600;
   margin: 0;
   padding-top: 20px;

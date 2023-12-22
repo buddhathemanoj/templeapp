@@ -114,16 +114,16 @@ const Booking = () => {
   return (
     <>
       <Navbar />
-      <br/>
-     
-      <br/>
+      <br />
+
+      <br />
       <div className="booking-contaniner">
-      <br/>
-      <br/>
-     
+        <br />
+        <br />
+
         {cardData.map((item) => (
-          <div style={{ padding: '0px 20px' }}>
-            <Card key={item.id} sx={{ maxWidth: 345, height: 125, my: 2, flexDirection: "row" }}>
+          <div style={{ padding: '0px 20px', alignItems: 'center', display: 'flex', justifyContent: 'center', margin: '0' }}>
+            <Card key={item.id} sx={{ width: 345, height: 143, my: 2, flexDirection: "row" }}>
               <Box sx={{ display: "flex", flexDirection: "row" }}>
                 {/* Image on the left */}
                 <CardMedia
@@ -134,30 +134,41 @@ const Booking = () => {
                 />
 
                 <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1, paddingLeft: 0 }}>
-                  <CardContent sx={{ flex: "1 0 auto" ,textAlign:'left',padding:'2px  10px 0px  10px'}}>
-                    <Typography sx={{fontSize:'16px'}} component="div" variant="h6">
-                      {item.title}<br/>
-                      {item.titlettamil}
+                  <CardContent sx={{ flex: "1 0 auto", textAlign: 'left', padding: '2px  10px 0px  10px', marginBottom: '10px' }}>
+                    <Typography sx={{ fontSize: '18px' }} component="div" variant="h6">
+                      {item.title}<br />
+                      <b>  {item.titlettamil}</b>
                     </Typography>
-                    <Typography variant="subtitle1" color="text.secondary" component="div">
-                      RM: {item.price}
-                    </Typography>
+                    <br />
+
                   </CardContent>
 
-                  <Box sx={{ display: "flex", flexDirection: "row", alignItems: "right",float:'right', gap: '10px',justifyContent:'right' ,marginBottom:'5px' }}>
-                    <IconButton
-                      className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
-                      onClick={() => handleSelectItem(item, item.id)}
-                    >
-                      <Add />
-                    </IconButton>
-                    <p>{item.count || 0}</p>
-                    <IconButton
-                      className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
-                      onClick={() => handleRemoveItem(item, item.id)}
-                    >
-                      <Remove />
-                    </IconButton>
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: '10px', justifyContent: 'space-between', marginBottom: '5px' }}>
+
+
+                    <div style={{ margin: '5px', paddingLeft: '3px', paddingTop: '4px' }}>
+                      <Typography variant="h6" color="text.secondary" component='div'>
+                        RM : {item.price}
+                      </Typography>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'right', gap: '10px' ,paddingRight:'3px'}}>
+                      <IconButton
+                        style={{ border: '1px solid #ccc', padding: '10px' }}
+                        className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
+                        onClick={() => handleSelectItem(item, item.id)}
+                      >
+                        <Add style={{ color: 'green' }} />
+                      </IconButton>
+                      <p>{item.count || 0}</p>
+                      <IconButton
+                        style={{ border: '1px solid #ccc', padding: '10px' }}
+                        className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
+                        onClick={() => handleRemoveItem(item, item.id)}
+                      >
+                        <Remove style={{ color: 'red' }} />
+                      </IconButton>
+                    </div>
+
                   </Box>
                 </Box>
               </Box>
@@ -176,7 +187,7 @@ const Booking = () => {
               variant="contained"
               endIcon={<BookOnline />}
               onClick={handleBooking}
-              style={{ borderRadius: '0px', width: '100%' }}
+              style={{ borderRadius: '0px', width: '100%',backgroundColor:'#E9B824' }}
             >
               Confirm Ticket
             </Button>

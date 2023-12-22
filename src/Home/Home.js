@@ -153,7 +153,7 @@ const Home = () => {
     const { name, email, noofpersons } = formdata;
 
     if (
-      checked &&
+      
       name.trim() !== "" &&
       isValidEmail(email) &&
       isValidNoOfPersons(noofpersons)
@@ -173,6 +173,7 @@ const Home = () => {
   return (
     <div className="backimg">
       <h2 className="custom-logo-head">ARLUMIGU THANDAYUTHAPANI KOVIL</h2>
+      <h2 className="custom-logo-head">அருள்மிகு தண்டாயுதபாணி கோவில்</h2>
       <div>
         <img src={Logo} alt="murugan" style={{ width: '180px', height: '230px' }} />
       </div>
@@ -189,7 +190,7 @@ const Home = () => {
         >
           <TextField
             id="outlined-multiline-flexible"
-            label="Name"
+            label="Name -  பெயர்"
             multiline
             maxRows={6}
             onChange={(e) => {
@@ -198,7 +199,7 @@ const Home = () => {
           />
           <TextField
             id="outlined-multiline-flexible"
-            label="Email"
+            label="Email - மின்னஞ்சல்"
             multiline
             type="email"
             maxRows={6}
@@ -208,7 +209,7 @@ const Home = () => {
           />
           <TextField
             id="outlined-multiline-flexible"
-            label="Phone Number"
+            label="Phone Number - தொலைபேசி எண்"
             multiline
             type="number"
             maxRows={6}
@@ -216,7 +217,7 @@ const Home = () => {
               setFormdata({ ...formdata, noofpersons: e.target.value });
             }}
           />
-          <FormControlLabel
+          {/* <FormControlLabel
             control={
               <Checkbox
                 style={{ float: 'left', paddingLeft: '15px' }}
@@ -226,16 +227,17 @@ const Home = () => {
               />
             }
             label="I agree to the terms and conditions"
-          />
+          /> */}
           <div style={{  width: "100%" }}>
             <Button
               style={{ width: "100%" }}
               variant="contained"
               onClick={handleSubmit}
             >
-              Submit
+              Proceed
             </Button>
           </div>
+          <br/>
           <ToastContainer />
         </Box>
       </div>

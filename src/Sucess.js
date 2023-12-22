@@ -67,7 +67,7 @@ const Success = () => {
         <br />
         <br />
         <Box sx={{ padding: '20px' }}>
-          <Card sx={{ mt: 2, mb: 2, padding: '5px' }}>
+          <Card sx={{ mt: 2, mb: 2, padding: '5px' ,textAlign:'center'}}>
             <a ref={downloadLinkRef} style={{ display: "none" }} />
 
             <Button onClick={downloadQRCode}>Download QR Code</Button>
@@ -79,7 +79,7 @@ const Success = () => {
               </Typography>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="body3" component="div">
-                  <strong>Name:</strong>
+                  <strong>Name - பெயர்: </strong>
                 </Typography>
                 <Typography variant="body3" component="div">
                   {name}
@@ -87,15 +87,15 @@ const Success = () => {
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="body3" component="div">
-                  <strong>Email:</strong>
+                  <strong>Email - மின்னஞ்சல்:</strong>
                 </Typography>
                 <Typography variant="body3" component="div">
                   {email}
                 </Typography>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography variant="body3" component="div">
-                  <strong>Phone Number:</strong>
+                <Typography variant="body5" component="div">
+                  <strong>Phone Number - தொலைபேசி  :</strong>
                 </Typography>
                 <Typography variant="body3" component="div">
                   {noofpersons}
@@ -114,7 +114,7 @@ const Success = () => {
                 <div key={item.id}>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography variant="body1" component="div">
-                      <strong>Service:</strong>
+                      <strong>Service - சேவை: </strong>
                     </Typography>
                     <Typography variant="body1" component="div">
                       {item.title}
@@ -122,7 +122,7 @@ const Success = () => {
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography variant="body1" component="div">
-                      <strong>Price:</strong>
+                      <strong>Price - விலை:</strong>
                     </Typography>
                     <Typography variant="body1" component="div">
                       RM {item.price}
@@ -131,7 +131,7 @@ const Success = () => {
 
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <Typography variant="body1" component="div">
-                      <strong>Qty:</strong>
+                      <strong>Qty - அளவு:</strong>
                     </Typography>
                     <Typography variant="body1" component="div">
                       {item.count}
@@ -142,17 +142,18 @@ const Success = () => {
                 </div>
 
               ))}
+              <br/>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
                 <Typography variant="body3" component="div">
-                  <strong>Total Price</strong>
+                  <strong>Total Price - மொத்த விலை :</strong>
                 </Typography>
-                <Typography variant="body3" component="div">
-                  {totalPrice}
+                <Typography style={{fontSize:'16px'}}  variant="body2" component="div">
+                 <b>RM {totalPrice}</b>
                 </Typography>
               </div>
             </CardContent>
-
-            <CardContent>
+<div style={{display:'flex',margin:'0',alignItems:'center',justifyContent:'center'}}>
+   <CardContent>
               <canvas ref={canvasRef} style={{ display: "none" }} />
 
               {qrCodeUrl && (
@@ -164,8 +165,10 @@ const Success = () => {
                   />
                 </div>
               )}
-              <h5> Scan this QR to enter</h5>
+              <h5 style={{textAlign:'center'}}> Scan this QR to enter</h5>
             </CardContent>
+</div>
+           
 
           </Card>
 

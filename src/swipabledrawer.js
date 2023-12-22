@@ -137,15 +137,15 @@ const SwipeableEdgeDrawer = ({
           overflow: "auto",
         }}
       >
-        <Card sx={{ mt: 2, mb: 2 }}>   
-            
-          <CardContent>
-            <br/>
-   <Typography style={{fontSize:'16px'}} variant="h6">Purchase Info </Typography>
+        <Card sx={{ mt: 2, mb: 2 }}>
 
+          <CardContent>
+
+            <Typography style={{ fontSize: '16px', textDecoration: 'underline', textAlign: 'center' }} variant="h6"><b>Purchase Info</b> </Typography>
+            <br />
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body1" component="div">
-                <strong>Name:</strong>
+                <strong>Name - பெயர்:</strong>
               </Typography>
               <Typography variant="body1" component="div">
                 {name}
@@ -153,7 +153,7 @@ const SwipeableEdgeDrawer = ({
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body1" component="div">
-                <strong>Email:</strong>
+                <strong>Email - மின்னஞ்சல்:</strong>
               </Typography>
               <Typography variant="body1" component="div">
                 {email}
@@ -161,7 +161,7 @@ const SwipeableEdgeDrawer = ({
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body1" component="div">
-                <strong>Phone Number:</strong>
+                <strong>Phone Number - தொலைபேசி எண்:</strong>
               </Typography>
               <Typography variant="body1" component="div">
                 {noofpersons}
@@ -176,15 +176,16 @@ const SwipeableEdgeDrawer = ({
               <div key={item.id}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <Typography variant="body1" component="div">
-                    <strong>Title:</strong>
+                    <strong>Service - சேவை:</strong>
                   </Typography>
                   <Typography variant="body1" component="div">
-                    {item.title}
+                    {item.title}<br/>
+                    {item.titlettamil}
                   </Typography>
                 </div>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <Typography variant="body1" component="div">
-                    <strong>Price:</strong>
+                    <strong>Price - விலை:</strong>
                   </Typography>
                   <Typography variant="body1" component="div">
                     RM {item.price}
@@ -193,7 +194,7 @@ const SwipeableEdgeDrawer = ({
 
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <Typography variant="body1" component="div">
-                    <strong>Tickets:</strong>
+                    <strong>Qty - அளவு:</strong>
                   </Typography>
                   <Typography variant="body1" component="div">
                     {item.count}
@@ -205,7 +206,7 @@ const SwipeableEdgeDrawer = ({
             ))}
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <Typography variant="body1" component="div">
-                <strong>Total Price:</strong>
+                <strong>Total Price - மொத்த விலை:</strong>
               </Typography>
               <Typography variant="body1" component="div">
                 RM {totalPrice}
@@ -229,7 +230,7 @@ const SwipeableEdgeDrawer = ({
               variant="contained"
               onClick={handleConfirm}
             >
-              Confirm Ticket
+              Confirm Ticket - டிக்கெட்டை உறுதிப்படுத்தவும்
             </Button>
           </CardContent>
         </Card>
