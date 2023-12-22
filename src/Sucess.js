@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 import QRCode from "qrcode"; // Import the QRCode library
 import Typography from "@mui/material/Typography";
 import CardContent from "@mui/material/CardContent";
-
+import html2canvas from 'html2canvas';
 import Card from "@mui/material/Card";
 import Box from "@mui/material/Box";
 import { Button } from "@mui/material";
@@ -31,6 +31,7 @@ const Success = () => {
         return;
       }
 
+      
       const generatedQRCode = await QRCode.toDataURL(result, {
         errorCorrectionLevel: "M",
         margin: 3,
@@ -45,6 +46,22 @@ const Success = () => {
       setQRCodeUrl(generatedQRCode); // Set the generated QR code URL
     } catch (error) {
       console.error("Error generating QR code:", error);
+    }
+  };
+
+  const downloadPage = async () => {
+    const contentElement = document.getElementById('capture'); // Replace 'capture' with the ID of the element you want to capture
+  
+    try {
+      const canvas = await html2canvas(contentElement);
+      const dataUrl = canvas.toDataURL();
+  
+      const downloadLink = document.createElement('a');
+      downloadLink.href = dataUrl;
+      downloadLink.download = 'booking_page.png';
+      downloadLink.click();
+    } catch (error) {
+      console.error('Error capturing content:', error);
     }
   };
 
@@ -66,13 +83,13 @@ const Success = () => {
         <br />
         <br />
         <br />
-        <Box sx={{ padding: '20px' }}>
+        <Box  sx={{ padding: '20px' }}>
           <Card sx={{ mt: 2, mb: 2, padding: '5px' ,textAlign:'center'}}>
             <a ref={downloadLinkRef} style={{ display: "none" }} />
 
-            <Button onClick={downloadQRCode}>Download QR Code</Button>
+            <Button onClick={downloadPage}>Download QR Code</Button>
           </Card>
-          <Card sx={{ mt: 2, mb: 2, padding: '5px' }}>
+          <Card sx={{ mt: 2, mb: 2, padding: '5px' }} id="capture">
             <CardContent>
               <Typography variant="h6" component="div" gutterBottom>
                 Booking Information
