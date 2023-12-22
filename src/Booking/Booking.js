@@ -123,7 +123,7 @@ const Booking = () => {
 
         {cardData.map((item) => (
           <div style={{ padding: '0px 20px', alignItems: 'center', display: 'flex', justifyContent: 'center', margin: '0' }}>
-            <Card key={item.id} sx={{ width: 345, height: 143, my: 2, flexDirection: "row" }}>
+            <Card key={item.id} sx={{ width: 345, my: 2, flexDirection: "row" }}>
               <Box sx={{ display: "flex", flexDirection: "row" }}>
                 {/* Image on the left */}
                 <CardMedia
@@ -143,7 +143,7 @@ const Booking = () => {
 
                   </CardContent>
 
-                  <Box sx={{ display: "flex", flexDirection: "row", gap: '10px', justifyContent: 'space-between', marginBottom: '5px' }}>
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: '10px', justifyContent: 'space-between', marginBottom: '5px',alignItems:"center" }}>
 
 
                     <div style={{ margin: '5px', paddingLeft: '3px', paddingTop: '4px' }}>
@@ -151,17 +151,17 @@ const Booking = () => {
                         RM : {item.price}
                       </Typography>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'right', gap: '10px' ,paddingRight:'3px'}}>
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' ,paddingRight:'3px'}}>
                       <IconButton
-                        style={{ border: '1px solid #ccc', padding: '10px' }}
+                        style={{ border: '1px solid #ccc', padding: '10px',width:"40px",height:"40px" }}
                         className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
                         onClick={() => handleSelectItem(item, item.id)}
                       >
                         <Add style={{ color: 'green' }} />
                       </IconButton>
-                      <p>{item.count || 0}</p>
+                      <p style={{margin:"5px",fontSize:"19px"}}>{item.count || 0}</p>
                       <IconButton
-                        style={{ border: '1px solid #ccc', padding: '10px' }}
+                        style={{ border: '1px solid #ccc', padding: '10px',width:"40px",height:"40px" }}
                         className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
                         onClick={() => handleRemoveItem(item, item.id)}
                       >

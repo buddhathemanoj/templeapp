@@ -174,7 +174,7 @@ const Home = () => {
     <div className="backimg">
       <h2 className="custom-logo-head">ARLUMIGU THANDAYUTHAPANI KOVIL</h2>
       <h2 className="custom-logo-head">அருள்மிகு தண்டாயுதபாணி கோவில்</h2>
-      <div>
+      <div style={{display:"flex",justifyContent:"center",alignItems:"center", marginBottom:"16px"}}>
         <img src={Logo} alt="murugan" style={{ width: '180px', height: '230px' }} />
       </div>
       <div>
@@ -183,7 +183,7 @@ const Home = () => {
           flexDirection="column"
           component="form"
           sx={{
-            "& .MuiTextField-root": { width: "100%" ,mb:1}, padding: '0 5px'
+            "& .MuiTextField-root": { width: "100%" ,mb:1}, padding: '0 10px'
           }}
           noValidate
           autoComplete="off"

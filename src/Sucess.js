@@ -78,24 +78,24 @@ const Success = () => {
                 Booking Information
               </Typography>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography variant="body3" component="div">
+                <Typography variant="body3" component="div" style={{fontSize:"14px"}}>
                   <strong>Name - பெயர்: </strong>
                 </Typography>
-                <Typography variant="body3" component="div">
+                <Typography variant="body3" component="div" style={{fontSize:"14px"}}> 
                   {name}
                 </Typography>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography variant="body3" component="div">
+                <Typography variant="body3" component="div" style={{fontSize:"14px"}}>
                   <strong>Email - மின்னஞ்சல்:</strong>
                 </Typography>
-                <Typography variant="body3" component="div">
+                <Typography variant="body3" component="div" style={{fontSize:"14px"}}>
                   {email}
                 </Typography>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <Typography variant="body5" component="div">
-                  <strong>Phone Number - தொலைபேசி  :</strong>
+                <Typography variant="body5" component="div" style={{fontSize:"14px"}}>
+                  <strong>Phone No - தொலைபேசி  :</strong>
                 </Typography>
                 <Typography variant="body3" component="div">
                   {noofpersons}
@@ -113,27 +113,27 @@ const Success = () => {
               {selectedItems.map((item) => (
                 <div key={item.id}>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography variant="body1" component="div">
+                    <Typography variant="body1" component="div" style={{fontSize:"14px"}}>
                       <strong>Service - சேவை: </strong>
                     </Typography>
-                    <Typography variant="body1" component="div">
+                    <Typography variant="body1" component="div" style={{fontSize:"14px"}}>
                       {item.title}
                     </Typography>
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography variant="body1" component="div">
+                    <Typography variant="body1" component="div" style={{fontSize:"14px"}}>
                       <strong>Price - விலை:</strong>
                     </Typography>
-                    <Typography variant="body1" component="div">
+                    <Typography variant="body1" component="div" style={{fontSize:"14px"}}>
                       RM {item.price}
                     </Typography>
                   </div>
 
                   <div style={{ display: "flex", justifyContent: "space-between" }}>
-                    <Typography variant="body1" component="div">
+                    <Typography variant="body1" component="div" style={{fontSize:"14px"}}>
                       <strong>Qty - அளவு:</strong>
                     </Typography>
-                    <Typography variant="body1" component="div">
+                    <Typography variant="body1" component="div" style={{fontSize:"14px"}}>
                       {item.count}
                     </Typography>
                   </div>
