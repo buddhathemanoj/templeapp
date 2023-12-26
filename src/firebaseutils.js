@@ -11,8 +11,24 @@ const submitFormData = async (formData) => {
     return docRef.id;
   } catch (error) {
     console.error("Error adding document: ", error);
-    throw error; 
+    throw error;
   }
 };
 
 export { submitFormData };
+
+export const submitSignup = async ({ name, email, phoneNumber, password }) => {
+  try {
+    const usersCollection = collection(db, "users");
+
+    const newUserDocRef = await addDoc(usersCollection, {
+      email,
+      name: name || null,
+      phoneNumber: phoneNumber || null,
+    });
+
+    return { uid: newUserDocRef.id, email, name, phoneNumber };
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
