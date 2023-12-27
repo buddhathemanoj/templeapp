@@ -4,12 +4,13 @@ import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import Logo from "../Assets/lord-murugan-clipart-png.png";
 import { useNavigate } from "react-router-dom";
-import { db } from "../firebaseconfig";
-import "./Signup.css";
-import { submitSignup } from "../firebaseutils";
+import { ToastContainer, toast } from "react-toastify";
+import { signup } from "../firebaseutils";
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
+  const navigate = useNavigate();
+
+  const [userData, setUserData] = useState({
     name: "",
     email: "",
     phoneNumber: "",
@@ -18,28 +19,29 @@ const Signup = () => {
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-    });
+    const { name, value } = e.target;
+    setUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
-
-  const navigate = useNavigate();
 
   const handleSubmit = async () => {
     try {
-      const userData = await submitSignup({
-        name: formData.name,
-        email: formData.email,
-        phoneNumber: formData.phoneNumber,
-        password: formData.password,
-      });
+      // Validate password and confirmPassword
+      if (userData.password !== userData.confirmPassword) {
+        toast.error("Passwords do not match");
+        return;
+      }
 
-      console.log("User signed up successfully:", userData);
-
-      navigate("/");
+      // Call signupSubmitData function to handle signup
+      const user = await signup(userData);
+      console.log("Signup successful:", user);
+      toast.success("Signup successful!");
+      navigate("/login");
     } catch (error) {
-      console.error("Signup failed:", error.message);
+      toast.error(`Signup failed: ${error.message}`);
+      console.error("Signup error:", error.message);
     }
   };
 
@@ -71,53 +73,70 @@ const Signup = () => {
         autoComplete="off"
       >
         <TextField
-          id="name"
+          name="name"
           label="Name - பெயர்"
           multiline
           maxRows={6}
           variant="outlined"
+          value={userData.name}
           onChange={handleChange}
           required
         />
         <br />
         <TextField
-          id="email"
+          name="email"
           label="Email - மின்னஞ்சல்"
           multiline
           maxRows={6}
           variant="outlined"
+          value={userData.email}
           onChange={handleChange}
           required
         />
         <br />
-        <TextField
-          id="phoneNumber"
-          label="Phone Number - தொலைபேசி எண்"
-          multiline
-          maxRows={6}
-          variant="outlined"
-          onChange={handleChange}
-          required
-        />
+        <div display="flex">
+          <TextField
+            // id="countryCode"
+            value={"+60"}
+            multiline
+            maxRows={6}
+            variant="outlined"
+            style={{ width: "17%" }}
+            disabled
+          />
+          <TextField
+            name="phoneNumber"
+            label="Phone Number - தொலைபேசி எண்"
+            multiline
+            maxRows={6}
+            variant="outlined"
+            value={userData.phoneNumber}
+            onChange={handleChange}
+            required
+            style={{ width: "83%" }}
+          />
+        </div>
         <br />
         <TextField
-          id="password"
+          name="password"
           label="Password - கடவுச்சொல்"
           //   multiline
           maxRows={6}
           variant="outlined"
           type="password"
+          value={userData.password}
           onChange={handleChange}
           required
         />
         <br />
         <TextField
-          id="confirmPassword"
+          name="confirmPassword"
           label="Confirm Password - கடவுச்சொல்லை உறுதிப்படுத்தவும்"
           //   multiline
           maxRows={6}
           variant="outlined"
           type="password"
+          value={userData.confirmPassword}
           onChange={handleChange}
           required
         />
@@ -129,6 +148,7 @@ const Signup = () => {
         >
           Sign Up
         </Button>
+        <ToastContainer />
       </Box>
     </div>
   );
