@@ -1,35 +1,40 @@
-import React from 'react';
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
-import './Login.css';
-import Logo from '../Assets/lord-murugan-clipart-png.png';
+import "./Login.css";
+import Logo from "../Assets/lord-murugan-clipart-png.png";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { ToastContainer, toast } from 'react-toastify';
-import { Link, useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from "react-toastify";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../firebaseutils";
 
 const Login = () => {
-  const [formdata, setFormdata] = React.useState({ name: '', password: '' });
   const navigate = useNavigate();
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormdata((prevData) => ({ ...prevData, [name]: value }));
+  const [loginData, setLoginData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setLoginData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
-  const handleClick = (event) => {
-    event.preventDefault();
+  const handleLoginClick = async () => {
+    try {
+      // Call the login function to verify email and password
+      const user = await login(loginData);
 
-    const { name, password } = formdata;
-
-    if (name.trim() !== "" && password !== "") {
-      navigate("/bookticket", {
-        state: {
-          name,
-          password,
-        },
-      });
-    } else {
-      toast.error("Please fill the Input Field");
+      // If login is successful, navigate to "/bookticket" page
+      toast.success("Login successful!");
+      navigate("/bookticket");
+    } catch (error) {
+      toast.error(`Login failed: ${error.message}`);
+      console.error("Login error:", error.message);
     }
   };
 
@@ -37,8 +42,19 @@ const Login = () => {
     <div className="backimg">
       <h2 className="custom-logo-head">ARLUMIGU THANDAYUTHAPANI KOVIL</h2>
       <h2 className="custom-logo-head">அருள்மிகு தண்டாயுதபாணி கோவில்</h2>
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "center", marginBottom: "16px" }}>
-        <img src={Logo} alt="murugan" style={{ width: '180px', height: '230px' }} />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          marginBottom: "16px",
+        }}
+      >
+        <img
+          src={Logo}
+          alt="murugan"
+          style={{ width: "180px", height: "230px" }}
+        />
       </div>
       <div>
         <Box
@@ -46,42 +62,42 @@ const Login = () => {
           flexDirection="column"
           component="form"
           sx={{
-            "& .MuiTextField-root": { width: "100%", mb: 1 }, padding: '0 10px'
+            "& .MuiTextField-root": { width: "100%", mb: 1 },
+            padding: "0 10px",
           }}
           noValidate
           autoComplete="off"
         >
           <TextField
-            id="outlined-multiline-flexible"
-            label="Name -  பெயர்"
+            name="email"
+            label="Email - மின்னஞ்சல்"
             multiline
             maxRows={6}
             required
-            value={formdata.name}
+            value={loginData.email}
             onChange={handleChange}
-            name="name"
           />
           <TextField
-            id="outlined-password-input"
+            name="password"
             label="Password - கடவுச்சொல்"
             type="password"
             maxRows={6}
             required
-            value={formdata.password}
+            value={loginData.password}
             onChange={handleChange}
-            name="password"
           />
           <div style={{ width: "100%" }}>
             <Button
               style={{ width: "100%" }}
               variant="contained"
-              onClick={handleClick}
+              onClick={handleLoginClick}
             >
               Login
             </Button>
-            
           </div>
-          <Link to='/forgotpassword' style={{ color: 'blue' }}>Forget password?</Link>
+          <Link to="/forgotpassword" style={{ color: "blue" }}>
+            Forget password?
+          </Link>
           <br />
           <ToastContainer />
         </Box>

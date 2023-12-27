@@ -1,6 +1,16 @@
 // firebaseUtils.js
 import { app } from "./firebaseconfig";
-import { getFirestore, collection, addDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  setDoc,
+  getDoc,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { signInWithEmailAndPassword } from "firebase/auth";
 
 const db = getFirestore(app);
 
@@ -17,18 +27,47 @@ const submitFormData = async (formData) => {
 
 export { submitFormData };
 
-export const submitSignup = async ({ name, email, phoneNumber, password }) => {
+const signup = async ({ name, email, phoneNumber, password }) => {
   try {
-    const usersCollection = collection(db, "users");
-
-    const newUserDocRef = await addDoc(usersCollection, {
+    const userDocRef = await addDoc(collection(db, "users"), {
       email,
       name: name || null,
       phoneNumber: phoneNumber || null,
+      password: password || null,
     });
-
-    return { uid: newUserDocRef.id, email, name, phoneNumber };
+    console.log("User signed up successfully with ID: ", userDocRef.id);
+    /* const uid = userDocRef.id;
+    await setDoc(userDocRef, { uid }, { merge: true }); */
+    return { uid: userDocRef.id, email, name, phoneNumber, password };
   } catch (error) {
-    throw new Error(error.message);
+    console.error("Error signing up: ", error);
+    throw error;
   }
 };
+
+export { signup };
+
+const login = async ({ email, password }) => {
+  try {
+    const userQuery = query(
+      collection(db, "users"),
+      where("email", "==", email),
+      where("password", "==", password)
+    );
+
+    const querySnapshot = await getDocs(userQuery);
+
+    if (querySnapshot.size > 0) {
+      const userDoc = querySnapshot.docs[0].data();
+      console.log("User logged in successfully:", userDoc);
+      return userDoc;
+    } else {
+      throw new Error("Invalid email or password");
+    }
+  } catch (error) {
+    console.error("Error logging in: ", error);
+    throw error;
+  }
+};
+
+export { login };
