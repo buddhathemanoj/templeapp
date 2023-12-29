@@ -54,6 +54,7 @@ const Booking = ({ user, state }) => {
         return { ...data, id: index + 1 }; // Adding id property starting from 1
       });
       setCardData(servicesData);
+      console.log("servicesData", servicesData);
     };
 
     fetchData();
@@ -162,7 +163,7 @@ const Booking = ({ user, state }) => {
                   <CardContent sx={{ flex: "1 0 auto", textAlign: 'left', padding: '2px  10px 0px  10px', marginBottom: '10px' }}>
                     <Typography sx={{ fontSize: '18px' }} component="div" variant="h6">
                       {item.title}<br />
-                      <b>  {item.titlettamil}</b>
+                      <b>  {item.titleTamil}</b>
                     </Typography>
                     <br />
 
