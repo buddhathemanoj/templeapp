@@ -1,80 +1,127 @@
+
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CardMedia from "@mui/material/CardMedia";
+import { connect } from "react-redux";
 import Card from "@mui/material/Card";
+import { Remove, Add, BookOnline, Favorite } from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import CardContent from "@mui/material/CardContent";
 import { Button, Typography, IconButton } from "@mui/material";
-import { Add, Remove, BookOnline } from "@mui/icons-material";
-import SwipeableEdgeDrawer from "../swipabledrawer";
+import SwipeableEdgeDrawer from "../swipabledrawer"; // Adjust the import path based on your project structure
+import "./Booking.css";
+import data from "./data.json";
+import { submitFormData } from "../firebaseutils";
 import Navbar from "../Navbar/Navbar";
 import { db } from "../firebaseconfig";
 import { collection, getDocs } from "firebase/firestore";
 
-const Booking = () => {
+const Booking = ({ user, state }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { name, email, noofpersons, address } = location.state || {};
-  const [cardData, setCardData] = useState([]);
+  console.log("user", user.user)
+
+
+  const [cardData, setCardData] = useState(null);
   const [selectedItems, setSelectedItems] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [isFav, setFav] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
-
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [noofpersons, setNoofpersons] = useState("");
   useEffect(() => {
-    // Fetch data from Firestore
-    const fetchData = async () => {
-      const servicesCollection = collection(db, "services");
-      const servicesSnapshot = await getDocs(servicesCollection);
-      const servicesData = servicesSnapshot.docs.map((doc) => doc.data());
-      setCardData(servicesData);
-    };
-
-    fetchData();
-  }, [db]); // Include db in the dependency array
-
+    if (user.user) {
+      setName(user.user.name)
+      setEmail(user.user.email)
+      setNoofpersons(user.user.phoneNumber)
+    }
+  }, [user.user]);
   useEffect(() => {
-    // Calculate total price whenever selectedItems or cardData change
     const calculatedTotalPrice = selectedItems.reduce(
-      (total, item) => total + item.price * (item.count || 0),
+      (total, item) => total + (item.price * (item.count || 0)),
       0
     );
     setTotalPrice(calculatedTotalPrice);
   }, [selectedItems, cardData]);
 
-  const handleSelectItem = (item) => {
-    const updatedItems = [...selectedItems];
-    const existingItem = updatedItems.find(
+  useEffect(() => {
+    const fetchData = async () => {
+      const servicesCollection = collection(db, "services");
+      const servicesSnapshot = await getDocs(servicesCollection);
+      const servicesData = servicesSnapshot.docs.map((doc, index) => {
+        const data = doc.data();
+        return { ...data, id: index + 1 }; // Adding id property starting from 1
+      });
+      setCardData(servicesData);
+    };
+
+    fetchData();
+  }, [db]);
+
+  const handleSelectItem = (item, itemId) => {
+    const existingItem = selectedItems.find(
       (selectedItem) => selectedItem.id === item.id
     );
 
-    if (existingItem) {
-      existingItem.count = (existingItem.count || 0) + 1;
+    if (!existingItem) {
+      setSelectedItems((prevSelected) => [
+        ...prevSelected,
+        { ...item, count: 1, totalPrice: item.price },
+      ]);
     } else {
-      updatedItems.push({ ...item, count: 1 });
+      setSelectedItems((prevSelected) =>
+        prevSelected.map((selectedItem) =>
+          selectedItem.id === item.id
+            ? {
+              ...selectedItem,
+              count: selectedItem.count + 1,
+              totaleachPrice: selectedItem.totalPrice + item.price,
+            }
+            : selectedItem
+        )
+      );
     }
 
-    setSelectedItems(updatedItems);
+    setCardData((prevData) =>
+      prevData.map((item) =>
+        item.id === itemId ? { ...item, count: (item.count || 0) + 1 } : item
+      )
+    );
   };
 
-  const handleRemoveItem = (item) => {
-    const updatedItems = [...selectedItems];
-    const existingItem = updatedItems.find(
+  const handleRemoveItem = (item, itemId) => {
+    const existingItem = selectedItems.find(
       (selectedItem) => selectedItem.id === item.id
     );
 
     if (existingItem) {
-      existingItem.count = Math.max((existingItem.count || 0) - 1, 0);
+      setSelectedItems((prevSelected) =>
+        prevSelected.map((selectedItem) =>
+          selectedItem.id === item.id
+            ? {
+              ...selectedItem,
+              count: selectedItem.count - 1,
+              totalPrice: selectedItem.totalPrice - item.price,
+            }
+            : selectedItem
+        )
+      );
 
-      if (existingItem.count === 0) {
-        // Remove the item from the list if count becomes zero
-        const index = updatedItems.indexOf(existingItem);
-        if (index !== -1) {
-          updatedItems.splice(index, 1);
-        }
+      if (existingItem.count === 1) {
+        setSelectedItems((prevSelected) =>
+          prevSelected.filter((selectedItem) => selectedItem.id !== item.id)
+        );
       }
     }
 
-    setSelectedItems(updatedItems);
+    setCardData((prevData) =>
+      prevData.map((item) =>
+        item.id === itemId && item.count && item.count > 0
+          ? { ...item, count: item.count - 1 }
+          : item
+      )
+    );
   };
 
   const handledrawer = () => {
@@ -93,160 +140,79 @@ const Booking = () => {
     <>
       <Navbar />
       <br />
+
       <br />
       <div className="booking-contaniner">
         <br />
         <br />
-        {cardData.map((item) => (
-          <div
-            key={item.id}
-            style={{
-              padding: "0px 20px",
-              alignItems: "center",
-              display: "flex",
-              justifyContent: "center",
-              margin: "0",
-            }}
-          >
-            <Card sx={{ width: 345, my: 2, flexDirection: "row" }}>
+
+        {cardData?.map((item) => (
+          <div style={{ padding: '0px 20px', alignItems: 'center', display: 'flex', justifyContent: 'center', margin: '0' }}>
+            <Card key={item.id} sx={{ width: 345, my: 2, flexDirection: "row" }}>
               <Box sx={{ display: "flex", flexDirection: "row" }}>
                 {/* Image on the left */}
                 <CardMedia
                   component="img"
-                  sx={{ width: 100, flexShrink: 0 }}
+                  sx={{ width: 100, flexShrink: 0 }} // Set flexShrink to 0 to prevent the image from shrinking
                   image={item.image}
                   alt={`${item.title} image`}
                 />
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    flexGrow: 1,
-                    paddingLeft: 0,
-                  }}
-                >
-                  <CardContent
-                    sx={{
-                      flex: "1 0 auto",
-                      textAlign: "left",
-                      padding: "2px  10px 0px  10px",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <Typography
-                      sx={{ fontSize: "18px" }}
-                      component="div"
-                      variant="h6"
-                    >
-                      {item.title}
-                      <br />
-                      <b> {item.titleTamil}</b>
+
+                <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1, paddingLeft: 0 }}>
+                  <CardContent sx={{ flex: "1 0 auto", textAlign: 'left', padding: '2px  10px 0px  10px', marginBottom: '10px' }}>
+                    <Typography sx={{ fontSize: '18px' }} component="div" variant="h6">
+                      {item.title}<br />
+                      <b>  {item.titlettamil}</b>
                     </Typography>
                     <br />
+
                   </CardContent>
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      gap: "10px",
-                      justifyContent: "space-between",
-                      marginBottom: "5px",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div
-                      style={{
-                        margin: "5px",
-                        paddingLeft: "5px",
-                        paddingTop: "4px",
-                      }}
-                    >
-                      <Typography
-                        variant="h6"
-                        color="text.secondary"
-                        component="div"
-                      >
-                        RM: {item.price}
+                  <Box sx={{ display: "flex", flexDirection: "row", gap: '10px', justifyContent: 'space-between', marginBottom: '5px', alignItems: "center" }}>
+
+
+                    <div style={{ margin: '5px', paddingLeft: '3px', paddingTop: '4px' }}>
+                      <Typography variant="h6" color="text.secondary" component='div'>
+                        RM : {item.price}
                       </Typography>
                     </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: "10px",
-                        paddingRight: "3px",
-                      }}
-                    >
+                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px', paddingRight: '3px' }}>
                       <IconButton
-                        style={{
-                          border: "1px solid #ccc",
-                          padding: "10px",
-                          width: "40px",
-                          height: "40px",
-                        }}
-                        className={
-                          selectedItems.some(
-                            (selectedItem) => selectedItem.id === item.id
-                          )
-                            ? "selected"
-                            : ""
-                        }
+                        style={{ border: '1px solid #ccc', padding: '10px', width: "40px", height: "40px" }}
+                        className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
                         onClick={() => handleSelectItem(item, item.id)}
                       >
-                        <Add style={{ color: "green" }} />
+                        <Add style={{ color: 'green' }} />
                       </IconButton>
-                      <p style={{ margin: "5px", fontSize: "19px" }}>
-                        {item.count || 0}
-                      </p>
+                      <p style={{ margin: "5px", fontSize: "19px" }}>{item.count || 0}</p>
                       <IconButton
-                        style={{
-                          border: "1px solid #ccc",
-                          padding: "10px",
-                          width: "40px",
-                          height: "40px",
-                        }}
-                        className={
-                          selectedItems.some(
-                            (selectedItem) => selectedItem.id === item.id
-                          )
-                            ? "selected"
-                            : ""
-                        }
+                        style={{ border: '1px solid #ccc', padding: '10px', width: "40px", height: "40px" }}
+                        className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
                         onClick={() => handleRemoveItem(item, item.id)}
                       >
-                        <Remove style={{ color: "red" }} />
+                        <Remove style={{ color: 'red' }} />
                       </IconButton>
                     </div>
+
                   </Box>
                 </Box>
               </Box>
             </Card>
+
+
           </div>
+
         ))}
         <br />
         <br />
-        <div
-          className="padningnone"
-          style={{
-            position: "fixed",
-            bottom: 0,
-            width: "100%",
-            zIndex: 1000,
-          }}
-        >
-          <Box sx={{ width: "100%" }}>
+        <div className="padningnone" style={{ position: "fixed", bottom: 0, width: "100%", zIndex: 1000 }}>
+          <Box sx={{ width: '100%' }}>
             <Button
               size="large"
               variant="contained"
               endIcon={<BookOnline />}
               onClick={handleBooking}
-              style={{
-                borderRadius: "0px",
-                width: "100%",
-                backgroundColor: "#E9B824",
-              }}
+              style={{ borderRadius: '0px', width: '100%', backgroundColor: '#E9B824' }}
             >
               Confirm Ticket
             </Button>
@@ -257,17 +223,20 @@ const Booking = () => {
           open={drawerOpen}
           onOpen={handledrawer}
           onClose={handleDrawerClose}
-          name={name}
-          email={email}
-          noofpersons={noofpersons}
-          address={address}
+        
           cardData={cardData}
           selectedItems={selectedItems}
           totalPrice={totalPrice}
+          user={user}
         />
       </div>
     </>
   );
 };
 
-export default Booking;
+const mapStateToProps = (state) => ({
+  user: state.user.user,
+  ...state
+});
+
+export default connect(mapStateToProps)(Booking);

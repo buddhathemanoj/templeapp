@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import "./Login.css";
+import { useDispatch } from "react-redux";
 import Logo from "../Assets/lord-murugan-clipart-png.png";
 import { Modal, Typography, Button, Box, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../firebaseutils";
 import { ToastContainer, toast } from "react-toastify";
-
+import { setUser } from "../redux/action";
 const Login = () => {
   const navigate = useNavigate();
-
+ const dispatch=useDispatch()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showVerificationModal, setShowVerificationModal] = useState(false);
@@ -21,7 +22,7 @@ const Login = () => {
   const handleLoginClick = async () => {
     setEmailError("");
     setPasswordError("");
-
+  
     if (!email) {
       setEmailError("Email is required");
       return;
@@ -30,12 +31,14 @@ const Login = () => {
       setPasswordError("Password is required");
       return;
     }
-
+  
     try {
       const loggedInUser = await loginUser({ email, password });
+      dispatch(setUser(loggedInUser));
 
       // Check if email is verified
       if (!loggedInUser.emailVerified) {
+        console.log("Login successful:", loggedInUser);
         setShowVerificationModal(true);
         console.log("Email not verified..!");
       } else {
@@ -47,12 +50,12 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Login error:", error.message);
-      // toast.error(`Login failed: ${error.message}`);
       if (error.message.includes("invalid-credential")) {
         toast.error("User not found. Please register.");
       }
     }
   };
+  
 
   const handleCloseModal = () => {
     setShowVerificationModal(false);

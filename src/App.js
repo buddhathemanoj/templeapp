@@ -9,11 +9,13 @@ import Sucess from "./Sucess";
 import Signup from "./Signup/Signup";
 import Login from "./Login/Login";
 import ForgotPassword from "./Login/ForgotPassword";
-
+import { Provider } from "react-redux";
+import store from "./redux/store";
 function App() {
   return (
     <>
       <BrowserRouter>
+      <Provider store={store}>
         <Routes>
           <Route path="/login" element={<Login/>}/>
           <Route path="/forgotpassword" element={<ForgotPassword/>}/>
@@ -23,6 +25,7 @@ function App() {
           <Route path="/confirmbook" element={<ConfirmBooking />} />
           <Route path="/success" element={<Sucess />} />
         </Routes>
+        </Provider>
       </BrowserRouter>
     </>
   );

@@ -37,12 +37,10 @@ const SwipeableEdgeDrawer = ({
   open,
   onClose,
   onOpen,
-  name,
-  email,
-  noofpersons,
   selectedItems,
   totalPrice,
-  cardData
+  cardData,
+  user
 }) => {
   const [confirmed, setConfirmed] = useState(false);
   const navigate = useNavigate();
@@ -51,19 +49,21 @@ const SwipeableEdgeDrawer = ({
   const [dataUrl, setDataUrl] = useState("");
   console.log("total price", totalPrice)
   console.log("selecttedoteh", selectedItems)
+
+
   const handleConfirm = async () => {
     onOpen();
 
-    if (checked && name.trim() !== "" && email.trim() !== "" && noofpersons.trim() !== "") {
+    if (checked && user.user) {
       try {
         const formData = {
-          name,
-          email,
-          noofpersons,
+          name: user.user.name,
+          email: user.user.email,
+          noofpersons: user.user.phoneNumber,
           selectedItems,
           totalPrice
         };
-
+        console.log("formdata", formData)
         const result = await submitFormData(formData);
 
         if (result) {
@@ -81,7 +81,7 @@ const SwipeableEdgeDrawer = ({
     }
   };
 
-  const count = cardData.map((item) => item.count)
+  const count = cardData?.map((item) => item.count)
   const [checked, setChecked] = useState(false);
 
   const handleChange = (event) => {
@@ -148,7 +148,7 @@ const SwipeableEdgeDrawer = ({
                 <strong>Name - பெயர்:</strong>
               </Typography>
               <Typography variant="body1" component="div">
-                {name}
+                {user.user.name}
               </Typography>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -156,7 +156,7 @@ const SwipeableEdgeDrawer = ({
                 <strong>Email - மின்னஞ்சல்:</strong>
               </Typography>
               <Typography variant="body1" component="div">
-                {email}
+                {user.user.email}
               </Typography>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -164,7 +164,7 @@ const SwipeableEdgeDrawer = ({
                 <strong>Phone Number - தொலைபேசி எண்:</strong>
               </Typography>
               <Typography variant="body1" component="div">
-                {noofpersons}
+                {user.user.phoneNumber}
               </Typography>
             </div>
 
@@ -179,7 +179,7 @@ const SwipeableEdgeDrawer = ({
                     <strong>Service - சேவை:</strong>
                   </Typography>
                   <Typography variant="body1" component="div">
-                    {item.title}<br/>
+                    {item.title}<br />
                     {item.titlettamil}
                   </Typography>
                 </div>
