@@ -1,16 +1,18 @@
 // firebaseUtils.js
-import { app } from "./firebaseconfig";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { app, auth } from "./firebaseconfig";
 import {
   getFirestore,
   collection,
   addDoc,
+  doc,
   setDoc,
   getDoc,
-  query,
-  where,
-  getDocs,
 } from "firebase/firestore";
-import { signInWithEmailAndPassword } from "firebase/auth";
 
 const db = getFirestore(app);
 
@@ -27,47 +29,64 @@ const submitFormData = async (formData) => {
 
 export { submitFormData };
 
-const signup = async ({ name, email, phoneNumber, password }) => {
+const signupUser = async ({
+  name,
+  email,
+  phoneNumber,
+  password,
+  confirmPassword,
+}) => {
   try {
-    const userDocRef = await addDoc(collection(db, "users"), {
-      email,
+    if (password.length < 6) {
+      throw new Error("Password should be at least 6 characters long");
+    }
+
+    if (password !== confirmPassword) {
+      throw new Error("Passwords do not match");
+    }
+
+    const res = await createUserWithEmailAndPassword(auth, email, password);
+
+    await sendEmailVerification(res.user);
+
+    const userDocRef = doc(db, "users", res.user.uid);
+
+    await setDoc(userDocRef, {
+      uid: res.user.uid,
       name: name || null,
+      email: res.user.email,
       phoneNumber: phoneNumber || null,
       password: password || null,
+      // confirmPassword: confirmPassword || null,
     });
-    console.log("User signed up successfully with ID: ", userDocRef.id);
-    /* const uid = userDocRef.id;
-    await setDoc(userDocRef, { uid }, { merge: true }); */
-    return { uid: userDocRef.id, email, name, phoneNumber, password };
+
+    return { ...res.user, name, email, phoneNumber };
   } catch (error) {
-    console.error("Error signing up: ", error);
-    throw error;
+    console.log("Error signup user:", error);
+    throw new Error(error.message);
   }
 };
 
-export { signup };
+export { signupUser };
 
-const login = async ({ email, password }) => {
+const loginUser = async ({ email, password }) => {
   try {
-    const userQuery = query(
-      collection(db, "users"),
-      where("email", "==", email),
-      where("password", "==", password)
-    );
+    const res = await signInWithEmailAndPassword(auth, email, password);
 
-    const querySnapshot = await getDocs(userQuery);
+    const userDocRef = doc(db, "users", res.user.uid);
+    const userDocSnapshot = await getDoc(userDocRef);
 
-    if (querySnapshot.size > 0) {
-      const userDoc = querySnapshot.docs[0].data();
-      console.log("User logged in successfully:", userDoc);
-      return userDoc;
+    if (userDocSnapshot.exists()) {
+      const userData = userDocSnapshot.data();
+      const { name, email, phoneNumber } = userData;
+      return { ...res.user, name, email, phoneNumber };
     } else {
-      throw new Error("Invalid email or password");
+      throw new Error("User data not found in Firestore.");
     }
   } catch (error) {
     console.error("Error logging in: ", error);
-    throw error;
+    throw new Error(error.message);
   }
 };
 
-export { login };
+export { loginUser };

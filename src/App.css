@@ -1,13 +1,12 @@
 #root {
   width: 100%;
-  background-color: #E9B824;
+  background-color: #e9b824;
   margin: 0 auto;
   min-height: 100vh;
   /* text-align: center; */
 }
 
 .custom-logo-head-navav {
-
   font-size: 22px;
   font-weight: 700;
   text-align: left;
@@ -24,14 +23,14 @@
 }
 
 .backimg {
-  background-color: #E9B824;
+  background-color: #e9b824;
   width: 100%;
   min-height: 100vh;
   /* padding: 10px 20px 0 20px ; */
 }
 
 .succsesbg {
-  background-color: #E9B824;
+  background-color: #e9b824;
   width: 100%;
   min-height: 100dvh;
 }
@@ -73,4 +72,8 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.css-1wc848c-MuiFormHelperText-root {
+  margin-left: 0px !important;
 }

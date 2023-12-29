@@ -1,102 +1,80 @@
-
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import CardMedia from "@mui/material/CardMedia";
 import Card from "@mui/material/Card";
-import { Remove, Add, BookOnline, Favorite } from "@mui/icons-material";
 import Box from "@mui/material/Box";
 import CardContent from "@mui/material/CardContent";
 import { Button, Typography, IconButton } from "@mui/material";
-import SwipeableEdgeDrawer from "../swipabledrawer"; // Adjust the import path based on your project structure
-import "./Booking.css";
-import data from "./data.json";
-import { submitFormData } from "../firebaseutils";
+import { Add, Remove, BookOnline } from "@mui/icons-material";
+import SwipeableEdgeDrawer from "../swipabledrawer";
 import Navbar from "../Navbar/Navbar";
+import { db } from "../firebaseconfig";
+import { collection, getDocs } from "firebase/firestore";
 
 const Booking = () => {
   const navigate = useNavigate();
   const location = useLocation();
-
   const { name, email, noofpersons, address } = location.state || {};
-  const [cardData, setCardData] = useState(data);
+  const [cardData, setCardData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [isFav, setFav] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    // Fetch data from Firestore
+    const fetchData = async () => {
+      const servicesCollection = collection(db, "services");
+      const servicesSnapshot = await getDocs(servicesCollection);
+      const servicesData = servicesSnapshot.docs.map((doc) => doc.data());
+      setCardData(servicesData);
+    };
+
+    fetchData();
+  }, [db]); // Include db in the dependency array
 
   useEffect(() => {
     // Calculate total price whenever selectedItems or cardData change
     const calculatedTotalPrice = selectedItems.reduce(
-      (total, item) => total + (item.price * (item.count || 0)),
+      (total, item) => total + item.price * (item.count || 0),
       0
     );
     setTotalPrice(calculatedTotalPrice);
   }, [selectedItems, cardData]);
 
-
-  const handleSelectItem = (item, itemId) => {
-    const existingItem = selectedItems.find(
-      (selectedItem) => selectedItem.id === item.id
-    );
-
-    if (!existingItem) {
-      setSelectedItems((prevSelected) => [
-        ...prevSelected,
-        { ...item, count: 1, totalPrice: item.price },
-      ]);
-    } else {
-      setSelectedItems((prevSelected) =>
-        prevSelected.map((selectedItem) =>
-          selectedItem.id === item.id
-            ? {
-              ...selectedItem,
-              count: selectedItem.count + 1,
-              totaleachPrice: selectedItem.totalPrice + item.price,
-            }
-            : selectedItem
-        )
-      );
-    }
-
-    setCardData((prevData) =>
-      prevData.map((item) =>
-        item.id === itemId ? { ...item, count: (item.count || 0) + 1 } : item
-      )
-    );
-  };
-
-  const handleRemoveItem = (item, itemId) => {
-    const existingItem = selectedItems.find(
+  const handleSelectItem = (item) => {
+    const updatedItems = [...selectedItems];
+    const existingItem = updatedItems.find(
       (selectedItem) => selectedItem.id === item.id
     );
 
     if (existingItem) {
-      setSelectedItems((prevSelected) =>
-        prevSelected.map((selectedItem) =>
-          selectedItem.id === item.id
-            ? {
-              ...selectedItem,
-              count: selectedItem.count - 1,
-              totalPrice: selectedItem.totalPrice - item.price,
-            }
-            : selectedItem
-        )
-      );
+      existingItem.count = (existingItem.count || 0) + 1;
+    } else {
+      updatedItems.push({ ...item, count: 1 });
+    }
 
-      if (existingItem.count === 1) {
-        setSelectedItems((prevSelected) =>
-          prevSelected.filter((selectedItem) => selectedItem.id !== item.id)
-        );
+    setSelectedItems(updatedItems);
+  };
+
+  const handleRemoveItem = (item) => {
+    const updatedItems = [...selectedItems];
+    const existingItem = updatedItems.find(
+      (selectedItem) => selectedItem.id === item.id
+    );
+
+    if (existingItem) {
+      existingItem.count = Math.max((existingItem.count || 0) - 1, 0);
+
+      if (existingItem.count === 0) {
+        // Remove the item from the list if count becomes zero
+        const index = updatedItems.indexOf(existingItem);
+        if (index !== -1) {
+          updatedItems.splice(index, 1);
+        }
       }
     }
 
-    setCardData((prevData) =>
-      prevData.map((item) =>
-        item.id === itemId && item.count && item.count > 0
-          ? { ...item, count: item.count - 1 }
-          : item
-      )
-    );
+    setSelectedItems(updatedItems);
   };
 
   const handledrawer = () => {
@@ -115,79 +93,160 @@ const Booking = () => {
     <>
       <Navbar />
       <br />
-
       <br />
       <div className="booking-contaniner">
         <br />
         <br />
-
         {cardData.map((item) => (
-          <div style={{ padding: '0px 20px', alignItems: 'center', display: 'flex', justifyContent: 'center', margin: '0' }}>
-            <Card key={item.id} sx={{ width: 345, my: 2, flexDirection: "row" }}>
+          <div
+            key={item.id}
+            style={{
+              padding: "0px 20px",
+              alignItems: "center",
+              display: "flex",
+              justifyContent: "center",
+              margin: "0",
+            }}
+          >
+            <Card sx={{ width: 345, my: 2, flexDirection: "row" }}>
               <Box sx={{ display: "flex", flexDirection: "row" }}>
                 {/* Image on the left */}
                 <CardMedia
                   component="img"
-                  sx={{ width: 100, flexShrink: 0 }} // Set flexShrink to 0 to prevent the image from shrinking
+                  sx={{ width: 100, flexShrink: 0 }}
                   image={item.image}
                   alt={`${item.title} image`}
                 />
-
-                <Box sx={{ display: "flex", flexDirection: "column", flexGrow: 1, paddingLeft: 0 }}>
-                  <CardContent sx={{ flex: "1 0 auto", textAlign: 'left', padding: '2px  10px 0px  10px', marginBottom: '10px' }}>
-                    <Typography sx={{ fontSize: '18px' }} component="div" variant="h6">
-                      {item.title}<br />
-                      <b>  {item.titlettamil}</b>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flexGrow: 1,
+                    paddingLeft: 0,
+                  }}
+                >
+                  <CardContent
+                    sx={{
+                      flex: "1 0 auto",
+                      textAlign: "left",
+                      padding: "2px  10px 0px  10px",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <Typography
+                      sx={{ fontSize: "18px" }}
+                      component="div"
+                      variant="h6"
+                    >
+                      {item.title}
+                      <br />
+                      <b> {item.titleTamil}</b>
                     </Typography>
                     <br />
-
                   </CardContent>
 
-                  <Box sx={{ display: "flex", flexDirection: "row", gap: '10px', justifyContent: 'space-between', marginBottom: '5px',alignItems:"center" }}>
-
-
-                    <div style={{ margin: '5px', paddingLeft: '3px', paddingTop: '4px' }}>
-                      <Typography variant="h6" color="text.secondary" component='div'>
-                        RM : {item.price}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      gap: "10px",
+                      justifyContent: "space-between",
+                      marginBottom: "5px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div
+                      style={{
+                        margin: "5px",
+                        paddingLeft: "5px",
+                        paddingTop: "4px",
+                      }}
+                    >
+                      <Typography
+                        variant="h6"
+                        color="text.secondary"
+                        component="div"
+                      >
+                        RM: {item.price}
                       </Typography>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '10px' ,paddingRight:'3px'}}>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: "10px",
+                        paddingRight: "3px",
+                      }}
+                    >
                       <IconButton
-                        style={{ border: '1px solid #ccc', padding: '10px',width:"40px",height:"40px" }}
-                        className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "10px",
+                          width: "40px",
+                          height: "40px",
+                        }}
+                        className={
+                          selectedItems.some(
+                            (selectedItem) => selectedItem.id === item.id
+                          )
+                            ? "selected"
+                            : ""
+                        }
                         onClick={() => handleSelectItem(item, item.id)}
                       >
-                        <Add style={{ color: 'green' }} />
+                        <Add style={{ color: "green" }} />
                       </IconButton>
-                      <p style={{margin:"5px",fontSize:"19px"}}>{item.count || 0}</p>
+                      <p style={{ margin: "5px", fontSize: "19px" }}>
+                        {item.count || 0}
+                      </p>
                       <IconButton
-                        style={{ border: '1px solid #ccc', padding: '10px',width:"40px",height:"40px" }}
-                        className={selectedItems.some((selectedItem) => selectedItem.id === item.id) ? "selected" : ""}
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "10px",
+                          width: "40px",
+                          height: "40px",
+                        }}
+                        className={
+                          selectedItems.some(
+                            (selectedItem) => selectedItem.id === item.id
+                          )
+                            ? "selected"
+                            : ""
+                        }
                         onClick={() => handleRemoveItem(item, item.id)}
                       >
-                        <Remove style={{ color: 'red' }} />
+                        <Remove style={{ color: "red" }} />
                       </IconButton>
                     </div>
-
                   </Box>
                 </Box>
               </Box>
             </Card>
-
-
           </div>
-
         ))}
         <br />
         <br />
-        <div className="padningnone" style={{ position: "fixed", bottom: 0, width: "100%", zIndex: 1000 }}>
-          <Box sx={{ width: '100%' }}>
+        <div
+          className="padningnone"
+          style={{
+            position: "fixed",
+            bottom: 0,
+            width: "100%",
+            zIndex: 1000,
+          }}
+        >
+          <Box sx={{ width: "100%" }}>
             <Button
               size="large"
               variant="contained"
               endIcon={<BookOnline />}
               onClick={handleBooking}
-              style={{ borderRadius: '0px', width: '100%',backgroundColor:'#E9B824' }}
+              style={{
+                borderRadius: "0px",
+                width: "100%",
+                backgroundColor: "#E9B824",
+              }}
             >
               Confirm Ticket
             </Button>
