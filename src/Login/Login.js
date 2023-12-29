@@ -2,46 +2,68 @@ import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import "./Login.css";
 import Logo from "../Assets/lord-murugan-clipart-png.png";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import { ToastContainer, toast } from "react-toastify";
+import { Modal, Typography, Button, Box, IconButton } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../firebaseutils";
+import { loginUser } from "../firebaseutils";
+import { ToastContainer, toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const [loginData, setLoginData] = useState({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setLoginData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
   const handleLoginClick = async () => {
-    try {
-      // Call the login function to verify email and password
-      const user = await login(loginData);
+    setEmailError("");
+    setPasswordError("");
 
-      // If login is successful, navigate to "/bookticket" page
-      toast.success("Login successful!");
-      navigate("/bookticket");
-    } catch (error) {
-      toast.error(`Login failed: ${error.message}`);
-      console.error("Login error:", error.message);
+    if (!email) {
+      setEmailError("Email is required");
+      return;
     }
+    if (!password) {
+      setPasswordError("Password is required");
+      return;
+    }
+
+    try {
+      const loggedInUser = await loginUser({ email, password });
+
+      // Check if email is verified
+      if (!loggedInUser.emailVerified) {
+        setShowVerificationModal(true);
+        console.log("Email not verified..!");
+      } else {
+        console.log("Login successful:", loggedInUser);
+        toast.success("Login successful!");
+        setTimeout(() => {
+          navigate("/bookticket");
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Login error:", error.message);
+      // toast.error(`Login failed: ${error.message}`);
+      if (error.message.includes("invalid-credential")) {
+        toast.error("User not found. Please register.");
+      }
+    }
+  };
+
+  const handleCloseModal = () => {
+    setShowVerificationModal(false);
   };
 
   return (
     <div className="backimg">
       <h2 className="custom-logo-head">ARLUMIGU THANDAYUTHAPANI KOVIL</h2>
-      <h2 className="custom-logo-head">அருள்மிகு தண்டாயுதபாணி கோவில்</h2>
+      <h2 className="custom-logo-head" style={{ paddingTop: "10px" }}>
+        அருள்மிகு தண்டாயுதபாணி கோவில்
+      </h2>
       <div
         style={{
           display: "flex",
@@ -53,7 +75,7 @@ const Login = () => {
         <img
           src={Logo}
           alt="murugan"
-          style={{ width: "180px", height: "230px" }}
+          style={{ width: "160px", height: "auto" }}
         />
       </div>
       <div>
@@ -74,8 +96,13 @@ const Login = () => {
             multiline
             maxRows={6}
             required
-            value={loginData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              setEmailError("");
+            }}
+            error={!!emailError}
+            helperText={emailError}
           />
           <TextField
             name="password"
@@ -83,8 +110,13 @@ const Login = () => {
             type="password"
             maxRows={6}
             required
-            value={loginData.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              setPasswordError("");
+            }}
+            error={!!passwordError}
+            helperText={passwordError}
           />
           <div style={{ width: "100%" }}>
             <Button
@@ -95,13 +127,57 @@ const Login = () => {
               Login
             </Button>
           </div>
-          <Link to="/forgotpassword" style={{ color: "blue" }}>
+          <Link
+            to="/forgotpassword"
+            style={{ color: "blue", marginTop: "3px" }}
+          >
             Forget password?
           </Link>
           <br />
-          <ToastContainer />
         </Box>
       </div>
+      <Modal
+        open={showVerificationModal}
+        onClose={handleCloseModal}
+        aria-labelledby="email-verification-modal"
+        aria-describedby="email-verification-description"
+      >
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            width: "50%",
+            bgcolor: "white",
+            borderRadius: 5,
+            boxShadow: 24,
+            p: 4,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "start",
+          }}
+        >
+          <IconButton
+            aria-label="close"
+            onClick={handleCloseModal}
+            sx={{
+              position: "absolute",
+              top: 3,
+              right: 3,
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
+          <Typography variant="h6" component="div" gutterBottom>
+            Email Verification
+          </Typography>
+          <Typography sx={{ mt: 2 }} paragraph>
+            Please verify your email before logging in.
+          </Typography>
+        </Box>
+      </Modal>
+      <ToastContainer />
     </div>
   );
 };

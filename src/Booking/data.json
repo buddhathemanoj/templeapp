@@ -2,57 +2,57 @@
   {
     "id": 1,
     "title": "Paal Kudam Ul Veethi",
-    "titlettamil":"பால் குடம் உள் வீதி",
-    "price":  15,
+    "titlettamil": "பால் குடம் உள் வீதி",
+    "price": 15,
     "image": "https://res.cloudinary.com/dorh4kb0v/image/upload/v1703241772/WhatsApp_Image_2023-12-22_at_4.12.10_PM_dt5pca.jpg"
   },
   {
     "id": 2,
     "title": "Paal Kudam Veli Veethi",
-    "titlettamil":"பால் குடம் வெளி வீதி",
-    "price":  25,
+    "titlettamil": "பால் குடம் வெளி வீதி",
+    "price": 25,
     "image": "https://res.cloudinary.com/dorh4kb0v/image/upload/v1703241772/WhatsApp_Image_2023-12-22_at_4.12.10_PM_dt5pca.jpg"
   },
   {
     "id": 3,
     "title": "Kaavadi Ul Veethi",
-    "titlettamil":"காவடி உள் வீதி",
-    "price":  15,
+    "titlettamil": "காவடி உள் வீதி",
+    "price": 15,
     "image": "https://res.cloudinary.com/dorh4kb0v/image/upload/v1703238977/kavadi_Ul_veedhi_m4oaze.png"
   },
   {
     "id": 4,
     "title": "Kaavadi Veli Veethi",
-    "titlettamil":"காவடி வெளி வீதி",
-    "price":  25,
+    "titlettamil": "காவடி வெளி வீதி",
+    "price": 25,
     "image": "https://res.cloudinary.com/dorh4kb0v/image/upload/v1703238978/kavadi_veli_veedhi_piws2h.png"
   },
   {
     "id": 5,
     "title": "Alagu Kaavadi Veli Veethi",
-    "titlettamil":"அழகு காவடி வெளி வீதி",
-    "price":  51,
+    "titlettamil": "அழகு காவடி வெளி வீதி",
+    "price": 51,
     "image": "https://res.cloudinary.com/dorh4kb0v/image/upload/v1703238977/alagu_kavadi_fatljq.png"
   },
   {
     "id": 6,
     "title": "Mudi Kanikai Adults",
-    "titlettamil":"முடி கனிகை பெரியவர்கள்",
+    "titlettamil": "முடி கனிகை பெரியவர்கள்",
     "price": 20,
     "image": "https://res.cloudinary.com/dorh4kb0v/image/upload/v1703238977/mudi_kanikkai_periyavar_msfik8.png"
   },
   {
     "id": 7,
     "title": "Mudi Kanikai Children",
-    "titlettamil":"முடி கனிகை குழந்தைகள்",
-    "price":  15,
+    "titlettamil": "முடி கனிகை குழந்தைகள்",
+    "price": 15,
     "image": "https://res.cloudinary.com/dorh4kb0v/image/upload/v1703239961/mottai_uczlvf.jpg"
   },
   {
     "id": 8,
     "title": "Mudi Kanikai & Shaving",
-    "titlettamil":"முடி கனிகை & ஷேவிங்",
-    "price":  25,
+    "titlettamil": "முடி கனிகை & ஷேவிங்",
+    "price": 25,
     "image": "https://res.cloudinary.com/dorh4kb0v/image/upload/v1703239963/mudi_kanikkai_and_savaram_s5rjds.png"
   }
 ]
