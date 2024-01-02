@@ -15,16 +15,16 @@ function App() {
   return (
     <>
       <BrowserRouter>
-      <Provider store={store}>
-        <Routes>
-          <Route path="/login" element={<Login/>}/>
-          <Route path="/forgotpassword" element={<ForgotPassword/>}/>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Signup />} />
-          <Route path="/bookticket" element={<Booking />} />
-          <Route path="/confirmbook" element={<ConfirmBooking />} />
-          <Route path="/success" element={<Sucess />} />
-        </Routes>
+        <Provider store={store}>
+          <Routes>
+            {/* <Route path="/login" element={<Login/>}/> */}
+            {/* <Route path="/forgotpassword" element={<ForgotPassword/>}/> */}
+            <Route path="/" element={<Home />} />
+            {/* <Route path="/register" element={<Signup />} /> */}
+            <Route path="/bookticket" element={<Booking />} />
+            <Route path="/confirmbook" element={<ConfirmBooking />} />
+            <Route path="/success" element={<Sucess />} />
+          </Routes>
         </Provider>
       </BrowserRouter>
     </>
