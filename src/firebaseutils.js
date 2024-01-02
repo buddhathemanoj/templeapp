@@ -29,64 +29,83 @@ const submitFormData = async (formData) => {
 
 export { submitFormData };
 
-const signupUser = async ({
-  name,
-  email,
-  phoneNumber,
-  password,
-  confirmPassword,
-}) => {
+export const storeUserData = async (userData) => {
   try {
-    if (password.length < 6) {
-      throw new Error("Password should be at least 6 characters long");
-    }
+    const { name, email, phoneNumber } = userData;
 
-    if (password !== confirmPassword) {
-      throw new Error("Passwords do not match");
-    }
-
-    const res = await createUserWithEmailAndPassword(auth, email, password);
-
-    await sendEmailVerification(res.user);
-
-    const userDocRef = doc(db, "users", res.user.uid);
-
+    // Add user data to Firestore "users" collection
+    const userDocRef = doc(db, "users", email); // Use email as the document ID
     await setDoc(userDocRef, {
-      uid: res.user.uid,
-      name: name || null,
-      email: res.user.email,
-      phoneNumber: phoneNumber || null,
-      password: password || null,
-      // confirmPassword: confirmPassword || null,
+      name,
+      email,
+      phoneNumber,
     });
 
-    return { ...res.user, name, email, phoneNumber };
+    return { name, email, phoneNumber };
   } catch (error) {
-    console.log("Error signup user:", error);
-    throw new Error(error.message);
+    console.error("Error storing user data: ", error);
+    throw error;
   }
 };
 
-export { signupUser };
+// const signupUser = async ({
+//   name,
+//   email,
+//   phoneNumber,
+//   password,
+//   confirmPassword,
+// }) => {
+//   try {
+//     if (password.length < 6) {
+//       throw new Error("Password should be at least 6 characters long");
+//     }
 
-const loginUser = async ({ email, password }) => {
-  try {
-    const res = await signInWithEmailAndPassword(auth, email, password);
+//     if (password !== confirmPassword) {
+//       throw new Error("Passwords do not match");
+//     }
 
-    const userDocRef = doc(db, "users", res.user.uid);
-    const userDocSnapshot = await getDoc(userDocRef);
+//     const res = await createUserWithEmailAndPassword(auth, email, password);
 
-    if (userDocSnapshot.exists()) {
-      const userData = userDocSnapshot.data();
-      const { name, email, phoneNumber } = userData;
-      return { ...res.user, name, email, phoneNumber };
-    } else {
-      throw new Error("User data not found in Firestore.");
-    }
-  } catch (error) {
-    console.error("Error logging in: ", error);
-    throw new Error(error.message);
-  }
-};
+//     await sendEmailVerification(res.user);
 
-export { loginUser };
+//     const userDocRef = doc(db, "users", res.user.uid);
+
+//     await setDoc(userDocRef, {
+//       uid: res.user.uid,
+//       name: name || null,
+//       email: res.user.email,
+//       phoneNumber: phoneNumber || null,
+//       password: password || null,
+//       // confirmPassword: confirmPassword || null,
+//     });
+
+//     return { ...res.user, name, email, phoneNumber };
+//   } catch (error) {
+//     console.log("Error signup user:", error);
+//     throw new Error(error.message);
+//   }
+// };
+
+// export { signupUser };
+
+// const loginUser = async ({ email, password }) => {
+//   try {
+//     const res = await signInWithEmailAndPassword(auth, email, password);
+
+//     const userDocRef = doc(db, "users", res.user.uid);
+//     const userDocSnapshot = await getDoc(userDocRef);
+
+//     if (userDocSnapshot.exists()) {
+//       const userData = userDocSnapshot.data();
+//       const { name, email, phoneNumber } = userData;
+//       return { ...res.user, name, email, phoneNumber };
+//     } else {
+//       throw new Error("User data not found in Firestore.");
+//     }
+//   } catch (error) {
+//     console.error("Error logging in: ", error);
+//     throw new Error(error.message);
+//   }
+// };
+
+// export { loginUser };
